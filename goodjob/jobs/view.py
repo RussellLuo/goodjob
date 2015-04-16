@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
+
 from rsrc import Response, status
 from rsrc.contrib.db.mongo import Collection
 
+from goodjob.celery.app import app as celery_app
 from .model import Job
-from . import executor
 
 # connect MongoDB
 from goodjob.db import connect
@@ -25,7 +27,9 @@ class JobView(Collection):
             errors = unicode(e)
             return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
-        executor.execute(job.id)
+        # queue non-periodic jobs at once
+        if not job.schedule:
+            celery_app.send_task("goodjob.core_job", [job.id])
 
         result = {'id': job.id, 'status': 'pending'}
         return Response(result, status=status.HTTP_201_CREATED)

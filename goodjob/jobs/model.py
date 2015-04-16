@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
+
 from mongoengine import (
-    Document, StringField, DateTimeField
+    Document, BooleanField,
+    StringField, DateTimeField
 )
 
 from goodjob.constants import NOW
@@ -26,6 +29,8 @@ class Job(Document):
     provider = StringField(required=True)
     notifier = StringField(default='gj-notifier')
     status = StringField(default=JobStatus.pending)
+    schedule = StringField(default='')
+    has_scheduled = BooleanField(default=False)
     date_created = DateTimeField(default=NOW)
     date_started = DateTimeField()
     date_stopped = DateTimeField()

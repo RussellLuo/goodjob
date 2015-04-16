@@ -1,24 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
+
 import os
 import errno
 from subprocess import Popen, PIPE, STDOUT
 
-from celery import Celery
-from celery.contrib.methods import task_method
-
 from goodjob.config import config
+from goodjob.celery.app import app as celery_app
 from .model import Job
 
 
-celery_app = Celery('executor', broker=config.REDIS_URL)
-
-
-def execute(job_id):
+@celery_app.task(name='goodjob.core_job')
+def core_job(job_id):
     job = Job.objects(id=job_id).first()
     executor = JobExecutor(job)
-    executor.execute.delay()
+    executor.execute()
 
 
 class JobExecutor(object):
@@ -37,7 +35,6 @@ class JobExecutor(object):
         logfile = os.path.join(logfile_path, '%s.log' % self.job.id)
         return logfile
 
-    @celery_app.task(filter=task_method)
     def execute(self):
         self.process = Popen(
             args=['gj-executor', str(self.job.id)],
