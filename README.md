@@ -23,7 +23,7 @@ Start the API:
 
 Start the worker:
 
-    $ gj-worker high
+    $ celery worker --app goodjob.jobs.executor --loglevel=info
 
 Provide a job:
 

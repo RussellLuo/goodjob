@@ -7,6 +7,10 @@ from rsrc.contrib.db.mongo import Collection
 from .model import Job
 from . import executor
 
+# connect MongoDB
+from goodjob.db import connect
+connect()
+
 
 class JobView(Collection):
     def __init__(self, *args, **kwargs):

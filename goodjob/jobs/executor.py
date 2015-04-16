@@ -5,19 +5,20 @@ import os
 import errno
 from subprocess import Popen, PIPE, STDOUT
 
-from rq import Connection, Queue
+from celery import Celery
+from celery.contrib.methods import task_method
 
 from goodjob.config import config
-from goodjob.db import REDIS_CONN
 from .model import Job
+
+
+celery_app = Celery('executor', broker=config.REDIS_URL)
 
 
 def execute(job_id):
     job = Job.objects(id=job_id).first()
-    with Connection(REDIS_CONN):
-        q = Queue('high')
-        executor = JobExecutor(job)
-        q.enqueue(executor)
+    executor = JobExecutor(job)
+    executor.execute.delay()
 
 
 class JobExecutor(object):
@@ -36,7 +37,8 @@ class JobExecutor(object):
         logfile = os.path.join(logfile_path, '%s.log' % self.job.id)
         return logfile
 
-    def __call__(self):
+    @celery_app.task(filter=task_method)
+    def execute(self):
         self.process = Popen(
             args=['gj-executor', str(self.job.id)],
             stdout=PIPE,

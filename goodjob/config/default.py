@@ -5,10 +5,8 @@
 LOGFILE_PATH = '/data/log/goodjob'
 
 # for MongoDB
-MONGO_HOST = '127.0.0.1'
-MONGO_PORT = 27017
+MONGO_URL = 'mongodb://localhost:27017/'
 DB_NAME = 'test'
 
 # for Redis
-REDIS_HOST = '127.0.0.1'
-REDIS_PORT = 6379
+REDIS_URL = 'redis://localhost:6379/0'

@@ -8,11 +8,13 @@ description = 'A service for executing asynchronous jobs.'
 
 install_requires = [
     'Flask==0.10.1',
-    'rq==0.5.1',
+    'celery==3.1.17',
+    'redis==2.10.3',
     'pymongo==2.7.2',
     'mongoengine==0.9.0',
     'jsonpatch==1.9',
     'Resource>=0.1.8',
+    'click==4.0',
 ]
 
 
@@ -42,7 +44,6 @@ setup(
     entry_points={
         'console_scripts': [
             'gj-api = goodjob.cli.api:main',
-            'gj-worker = goodjob.cli.worker:main',
             'gj-executor = goodjob.cli.executor:main',
             'gj-notifier = goodjob.cli.notifier:main',
         ],
