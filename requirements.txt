@@ -1,0 +1,6 @@
+Flask==0.10.1
+rq==0.5.1
+pymongo==2.7.2
+mongoengine==0.9.0
+jsonpatch==1.9
+Resource>=0.1.8
