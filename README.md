@@ -21,18 +21,30 @@ Start the API:
 
     $ gj-api
 
-Start the worker:
+Start the celery worker:
 
-    $ celery worker --app goodjob.jobs.executor --loglevel=info
+    $ celery worker --app=goodjob.celery.app --loglevel=info
 
-Provide a job:
+Start the celery scheduler (for periodic jobs):
+
+    $ celery beat --app=goodjob.celery.app --loglevel=info
+
+Create an one-off job:
 
     $ curl -i -X POST -H "Content-Type: application/json" -d '{
         "name": "greet",
         "provider": "echo hello"
     }' http://127.0.0.1:5000/jobs
 
-Inspect the job data:
+or a periodic job (in crontab-style):
+
+    $ curl -i -X POST -H "Content-Type: application/json" -d '{
+        "name": "greet",
+        "provider": "echo hello",
+        "schedule": "* * * * * *"
+    }' http://127.0.0.1:5000/jobs
+
+Inspect the job:
 
     $ curl -i http://127.0.0.1:5000/jobs/<job-id>
 
