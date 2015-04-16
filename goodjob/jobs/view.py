@@ -1,13 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from rsrc import View, Response, status
+from rsrc import Response, status
+from rsrc.contrib.db.mongo import Collection
 
 from .model import Job
 from . import executor
 
 
-class JobView(View):
+class JobView(Collection):
+    def __init__(self, *args, **kwargs):
+        kwargs.update(db=Job._get_db(), table_name=Job._get_collection_name())
+        super(JobView, self).__init__(*args, **kwargs)
+
     def post(self, request):
         try:
             job = Job(**request.data)

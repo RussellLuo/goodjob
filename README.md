@@ -32,6 +32,10 @@ Provide a job:
         "provider": "echo hello"
     }' http://127.0.0.1:5000/jobs
 
-See the job result:
+Inspect the job data:
+
+    $ curl -i http://127.0.0.1:5000/jobs/<job-id>
+
+See the job log:
 
     $ curl -i http://127.0.0.1:5000/logs/<job-id>
