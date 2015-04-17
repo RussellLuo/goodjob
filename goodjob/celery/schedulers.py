@@ -7,13 +7,8 @@ from bson import ObjectId
 from celery.beat import ScheduleEntry, PersistentScheduler
 from celery.schedules import crontab
 
+from goodjob.config import config
 from goodjob.jobs.model import Job
-
-
-# This scheduler must wake up more frequently than the
-# regular of 5 minutes because it needs to take external
-# changes to the schedule into account.
-DEFAULT_MAX_INTERVAL = 5  # seconds
 
 
 class DatabaseScheduler(PersistentScheduler):
@@ -24,8 +19,10 @@ class DatabaseScheduler(PersistentScheduler):
         kwargs['lazy'] = False
         super(DatabaseScheduler, self).__init__(*args, **kwargs)
 
-        # maximum time to sleep between re-checking the schedule.
-        self.max_interval = DEFAULT_MAX_INTERVAL
+        # this scheduler must wake up more frequently than the
+        # regular of 5 minutes because it needs to take external
+        # changes to the schedule into account.
+        self.max_interval = config.CELERY_SCHEDULE_INTERVAL
 
         # schedule all periodic jobs from database for the first time
         self.update_schedule(forced=True)
