@@ -38,7 +38,7 @@ setup(
     description=description,
     license='MIT',
     long_description=description,
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     url='https://github.com/RussellLuo/goodjob',
     install_requires=install_requires,
     entry_points={
