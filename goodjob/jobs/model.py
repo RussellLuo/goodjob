@@ -15,6 +15,7 @@ class JobEvent(object):
     started = 'started'
     finished = 'finished'
     failed = 'failed'
+    cancelled = 'cancelled'
 
 
 class JobStatus(object):
@@ -22,6 +23,7 @@ class JobStatus(object):
     in_progress = 'in_progress'
     finished = 'finished'
     failed = 'failed'
+    cancelled = 'cancelled'
 
 
 class Job(Document):

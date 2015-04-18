@@ -4,12 +4,13 @@
 from __future__ import absolute_import
 
 import os
+import time
 import errno
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import Popen
 
 from goodjob.config import config
 from goodjob.celery.app import app as celery_app
-from .model import Job
+from .model import Job, JobStatus
 
 
 @celery_app.task(name='goodjob.core_job')
@@ -24,7 +25,7 @@ class JobExecutor(object):
         self.job = job
         self.process = None
 
-    def get_logfile(self):
+    def _get_logfile(self):
         logfile_path = config.LOGFILE_PATH
         try:
             os.mkdir(logfile_path)
@@ -35,19 +36,30 @@ class JobExecutor(object):
         logfile = os.path.join(logfile_path, '%s.log' % self.job.id)
         return logfile
 
-    def execute(self):
-        self.process = Popen(
-            args=['gj-executor', str(self.job.id)],
-            stdout=PIPE,
-            stderr=STDOUT,
-        )
+    def _is_cancelled(self):
+        job = Job.objects(id=self.job.id).only('status').first()
+        return job.status == JobStatus.cancelled
 
-        self.job.logfile = self.get_logfile()
+    def _cancel(self):
+        self.process.terminate()
+
+    def execute(self):
+        self.job.logfile = self._get_logfile()
         self.job.save()
 
         with open(self.job.logfile, 'w') as log:
-            while self.process.poll() is None:
-                data = self.process.stdout.read()
-                log.write(data)
+            self.process = Popen(
+                args=['gj-executor', str(self.job.id)],
+                stdout=log,
+                stderr=log,
+            )
+
+            while True:
+                if self._is_cancelled():
+                    self._cancel()
+                if self.process.poll() is None:
+                    time.sleep(0.1)
+                else:
+                    break
 
         return self.process.returncode
