@@ -17,9 +17,21 @@ Install development version from `GitHub`:
 Quickstart
 ----------
 
+### 1. Start databases
+
+Start the MongoDB server (used by `goodjob-api`):
+
+    $ mongod
+
+Start the Redis server (used by `celery`):
+
+    $ redis-server
+
+### 2. Start services
+
 Start the API:
 
-    $ gj-api
+    $ goodjob-api
 
 Start the celery worker:
 
@@ -28,6 +40,13 @@ Start the celery worker:
 Start the celery scheduler (for periodic jobs):
 
     $ celery beat --app=goodjob.celery.app --loglevel=info
+
+It is tedious to manage all the services by hand, you can ask the awesome `Supervisor` for help:
+
+    $ supervisord -c ${GOODJOB_PROJ}/supervisord.conf
+    $ supervisorctl -c ${GOODJOB_PROJ}/supervisord.conf status
+
+### 3. Create jobs
 
 Create an one-off job:
 
@@ -51,3 +70,29 @@ Inspect the job:
 See the job log:
 
     $ curl -i http://127.0.0.1:5000/logs/<job-id>
+
+### 4. Cancel jobs
+
+Cancel a job (use [JSON Patch][1] syntax):
+
+    $ curl -i -X PATCH -H "Content-Type: application/json" -d '[{
+        "op": "add",
+        "path": "/status",
+        "value": "cancelled"
+    }]' http://127.0.0.1:5000/jobs/<job-id>
+
+### 5. Delete jobs
+
+Delete a job:
+
+    $ curl -i -X DELETE http://127.0.0.1:5000/jobs/<job-id>
+
+
+License
+-------
+
+[MIT][2]
+
+
+[1]: http://tools.ietf.org/html/rfc6902
+[2]: http://opensource.org/licenses/MIT
