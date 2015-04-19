@@ -25,9 +25,11 @@ class TestJobExecutor(TestCase):
         assert(job.date_started is not None)
         assert(job.date_stopped is not None)
 
-    def test_cancel_job(self):
-        """STRANGE ISSUE: This test will hang if runned by `tox`!"""
+        with open(job.logfile, 'r') as log:
+            text = log.read()
+            assert('>>> job finished' in text)
 
+    def test_cancel_job(self):
         job = self.create_job(provider='sleep 30')
         executor = JobExecutor(job)
         async_job = self.apply_async(executor.execute)
@@ -45,3 +47,7 @@ class TestJobExecutor(TestCase):
         assert(job.status == JobStatus.cancelled)
         assert(job.date_started is not None)
         assert(job.date_stopped is not None)
+
+        with open(job.logfile, 'r') as log:
+            text = log.read()
+            assert('>>> job cancelled' in text)
