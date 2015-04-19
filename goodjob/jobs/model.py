@@ -8,6 +8,7 @@ from mongoengine import (
     StringField, DateTimeField
 )
 
+from goodjob.config import config
 from goodjob.constants import NOW
 
 
@@ -27,6 +28,8 @@ class JobStatus(object):
 
 
 class Job(Document):
+    meta = {'collection': config.COLLECTION_NAME}
+
     name = StringField(required=True)
     provider = StringField(required=True)
     notifier = StringField(default='goodjob-notifier')
