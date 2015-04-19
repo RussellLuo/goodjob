@@ -6,5 +6,5 @@ from __future__ import absolute_import
 from celery import Celery
 
 
-app = Celery('executor')
+app = Celery('goodjob')
 app.config_from_object('goodjob.celery.config')

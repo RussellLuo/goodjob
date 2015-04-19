@@ -43,9 +43,9 @@ setup(
     install_requires=install_requires,
     entry_points={
         'console_scripts': [
-            'gj-api = goodjob.cli.api:main',
-            'gj-executor = goodjob.cli.executor:main',
-            'gj-notifier = goodjob.cli.notifier:main',
+            'goodjob-api = goodjob.cli.api:main',
+            'goodjob-executor = goodjob.cli.executor:main',
+            'goodjob-notifier = goodjob.cli.notifier:main',
         ],
     },
 )

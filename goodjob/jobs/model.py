@@ -29,7 +29,7 @@ class JobStatus(object):
 class Job(Document):
     name = StringField(required=True)
     provider = StringField(required=True)
-    notifier = StringField(default='gj-notifier')
+    notifier = StringField(default='goodjob-notifier')
     status = StringField(default=JobStatus.pending)
     schedule = StringField(default='')
     has_scheduled = BooleanField(default=False)
