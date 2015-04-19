@@ -27,6 +27,10 @@ class CommandError(Exception):
 class Command(object):
     def __init__(self, name):
         self.name = name
+        self.process = None
+
+    def cancel(self):
+        self.process.terminate()
 
     def run(self, args='', **kwargs):
         kwargs['stdout'] = PIPE
@@ -34,14 +38,14 @@ class Command(object):
         cmd = shlex.split(self.name) + shlex.split(args)
 
         try:
-            proc = Popen(cmd, **kwargs)
+            self.process = Popen(cmd, **kwargs)
         except OSError:
             msg = traceback.format_exc()
             raise CommandError(cmd, 1, msg)
 
-        stdout_data, stderr_data = proc.communicate()
+        stdout_data, stderr_data = self.process.communicate()
 
-        if proc.returncode != 0:
-            raise CommandError(cmd, proc.returncode, stderr_data)
+        if self.process.returncode != 0:
+            raise CommandError(cmd, self.process.returncode, stderr_data)
 
         sys.stdout.write(stdout_data)

@@ -24,6 +24,7 @@ class JobExecutor(object):
     def __init__(self, job):
         self.job = job
         self.process = None
+        self.cancel_triggered = False
 
     def _get_logfile(self):
         logfile_path = config.LOGFILE_PATH
@@ -36,7 +37,7 @@ class JobExecutor(object):
         logfile = os.path.join(logfile_path, '%s.log' % self.job.id)
         return logfile
 
-    def _is_cancelled(self):
+    def _is_job_cancelled(self):
         job = Job.objects(id=self.job.id).only('status').first()
         return job.status == JobStatus.cancelled
 
@@ -55,8 +56,9 @@ class JobExecutor(object):
             )
 
             while True:
-                if self._is_cancelled():
+                if not self.cancel_triggered and self._is_job_cancelled():
                     self._cancel()
+                    self.cancel_triggered = True
                 if self.process.poll() is None:
                     time.sleep(0.1)
                 else:

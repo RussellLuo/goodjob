@@ -23,6 +23,9 @@ class RealJobExecutor(object):
         signal.signal(signal.SIGTERM, self.sigterm_received)
 
     def sigterm_received(self, signum, stack):
+        # cancel the provider process
+        self.provider.cancel()
+
         self.notifier.run(JobEvent.cancelled)
         self.job.status = JobStatus.cancelled
         self.job.date_stopped = NOW()
