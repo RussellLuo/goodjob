@@ -1,0 +1,9 @@
+echo "start..."
+sleep 1
+echo "wait..."
+sleep 1
+echo "wait..."
+sleep 1
+echo "wait..."
+sleep 1
+echo "end..."

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import threading
+from multiprocessing import Process
 
 from goodjob.jobs.model import Job
 
@@ -12,7 +12,7 @@ class TestCase(object):
         job.save()
         return job
 
-    def apply_async(self, func):
-        d = threading.Thread(target=func)
-        d.setDaemon(True)
-        return d
+    def apply_async(self, func, args=()):
+        proc = Process(target=func, args=args)
+        proc.daemon = True
+        return proc
