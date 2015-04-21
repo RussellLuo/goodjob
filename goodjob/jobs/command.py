@@ -33,7 +33,7 @@ class Command(object):
         self.process.terminate()
 
     def run(self, args='', **kwargs):
-        kwargs['stdout'] = PIPE
+        kwargs['stdout'] = sys.stdout
         kwargs['stderr'] = PIPE
         cmd = shlex.split(self.name) + shlex.split(args)
 
@@ -43,9 +43,7 @@ class Command(object):
             msg = traceback.format_exc()
             raise CommandError(cmd, 1, msg)
 
-        stdout_data, stderr_data = self.process.communicate()
+        _, stderr_data = self.process.communicate()
 
         if self.process.returncode != 0:
             raise CommandError(cmd, self.process.returncode, stderr_data)
-
-        sys.stdout.write(stdout_data)

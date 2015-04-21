@@ -48,7 +48,7 @@ class JobExecutor(object):
         self.job.logfile = self._get_logfile()
         self.job.save()
 
-        with open(self.job.logfile, 'w') as log:
+        with open(self.job.logfile, 'a+') as log:
             self.process = Popen(
                 args=['goodjob-executor', str(self.job.id)],
                 stdout=log,
