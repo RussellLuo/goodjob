@@ -4,8 +4,11 @@
 from __future__ import absolute_import
 
 from . import default
-from easyconfig import Config, envvar_object
+from easyconfig import Config, yaml_mapping
 
 config = Config()
 config.from_object(default)
-config.from_object(envvar_object('GOODJOB_SETTINGS_MODULE', silent=True))
+
+import os
+yaml_filename = os.environ.get('GOODJOB_CONFIG_YAML', '')
+config.from_mapping(yaml_mapping(yaml_filename, silent=True))
