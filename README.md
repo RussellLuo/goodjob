@@ -7,6 +7,10 @@ A service for executing asynchronous jobs.
 Installation
 ------------
 
+Install `Goodjob` with `pip`:
+
+    $ pip install Goodjob
+
 Install development version from `GitHub`:
 
     $ git clone https://github.com/RussellLuo/goodjob.git
@@ -31,7 +35,7 @@ Start the Redis server (used by `celery`):
 
 Start the API:
 
-    $ goodjob-api
+    $ restart goodjob.api:api
 
 Start the celery worker:
 
@@ -60,7 +64,7 @@ or a periodic job (in crontab-style):
     $ curl -i -X POST -H "Content-Type: application/json" -d '{
         "name": "greet",
         "provider": "echo hello",
-        "schedule": "* * * * * *"
+        "schedule": "* * * * *"
     }' http://127.0.0.1:5000/jobs
 
 Inspect the job:
