@@ -3,18 +3,22 @@
 
 from __future__ import absolute_import
 
-from rsrc import View, Response
-from rsrc.exceptions import NotFoundError
+from restart.resource import Resource
+from restart.exceptions import NotFound
 
+from goodjob.api import api
 from goodjob.jobs.model import Job
 
 
-class LogView(View):
-    def get_item(self, request, pk):
+@api.register
+class Logs(Resource):
+    name = 'logs'
+
+    def read(self, request, pk):
         job = Job.objects(id=pk).first()
         try:
             with open(job.logfile, 'r') as log:
                 content = log.read()
-                return Response(content)
+                return content
         except IOError:
-            raise NotFoundError()
+            raise NotFound()

@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import absolute_import
+
+from restart import status
+from restart.ext.mongo.collection import Collection
+
+from goodjob.api import api
+from goodjob.celery.app import app as celery_app
+from .model import Job
+
+
+@api.register
+class Jobs(Collection):
+    name = 'jobs'
+
+    database = Job._get_db()
+    collection_name = Job._get_collection_name()
+
+    def create(self, request):
+        try:
+            job = Job(**request.data)
+            job.save()
+        except Exception as e:
+            errors = unicode(e)
+            return errors, status.HTTP_400_BAD_REQUEST
+
+        # Queue non-periodic jobs at once
+        if not job.schedule:
+            celery_app.send_task("goodjob.core_job", [job.id])
+
+        result = {'id': job.id, 'status': 'pending'}
+        return result, status.HTTP_201_CREATED

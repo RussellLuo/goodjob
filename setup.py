@@ -7,13 +7,10 @@ from setuptools import setup, find_packages
 description = 'A service for executing asynchronous jobs.'
 
 install_requires = [
-    'Flask==0.10.1',
     'celery==3.1.17',
     'redis==2.10.3',
-    'pymongo==2.7.2',
+    'restart-mongo',
     'mongoengine==0.9.0',
-    'jsonpatch==1.9',
-    'Resource>=0.1.8',
     'click==4.0',
 ]
 
@@ -43,7 +40,6 @@ setup(
     install_requires=install_requires,
     entry_points={
         'console_scripts': [
-            'goodjob-api = goodjob.cli.api:main',
             'goodjob-executor = goodjob.cli.executor:main',
             'goodjob-notifier = goodjob.cli.notifier:main',
         ],
