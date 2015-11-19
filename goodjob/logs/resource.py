@@ -10,15 +10,17 @@ from goodjob.api import api
 from goodjob.jobs.model import Job
 
 
-@api.register
-class Logs(Resource):
-    name = 'logs'
+@api.route(uri='/jobs/<pk>/log', methods=['GET'])
+class Log(Resource):
+    name = 'log'
 
     def read(self, request, pk):
         job = Job.objects(id=pk).first()
+        if job is None:
+            raise NotFound('No job (%s) found' % pk)
         try:
             with open(job.logfile, 'r') as log:
                 content = log.read()
                 return content
         except IOError:
-            raise NotFound()
+            raise NotFound('Log file (%s) missing' % job.logfile)

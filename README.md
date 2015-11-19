@@ -73,7 +73,7 @@ Inspect the job:
 
 See the job log:
 
-    $ curl -i http://127.0.0.1:5000/logs/<job-id>
+    $ curl -i http://127.0.0.1:5000/jobs/<job-id>/log
 
 ### 4. Cancel jobs
 
