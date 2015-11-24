@@ -5,7 +5,7 @@ from __future__ import absolute_import
 
 import time
 
-from goodjob.jobs.model import Job, JobStatus
+from goodjob.jobs.models import Job, JobStatus
 from goodjob.jobs.executor import JobExecutor
 from .base import TestCase
 
@@ -30,7 +30,7 @@ class TestJobExecutor(TestCase):
             assert('>>> job finished' in text)
 
     def test_cancel_job(self):
-        job = self.create_job(provider='sleep 30')
+        job = self.create_job(command='sleep 30')
         executor = JobExecutor(job)
         async_job = self.apply_async(executor.execute)
         async_job.start()

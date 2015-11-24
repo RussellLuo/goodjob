@@ -7,7 +7,7 @@ from restart.resource import Resource
 from restart.exceptions import NotFound
 
 from goodjob.api import api
-from goodjob.jobs.model import Job
+from goodjob.jobs.models import Job
 
 
 @api.route(uri='/jobs/<pk>/log', methods=['GET'])

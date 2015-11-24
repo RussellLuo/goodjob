@@ -8,7 +8,7 @@ from celery.beat import ScheduleEntry, PersistentScheduler
 from celery.schedules import crontab
 
 from goodjob.config import config
-from goodjob.jobs.model import Job
+from goodjob.jobs.models import Job
 
 
 class DatabaseScheduler(PersistentScheduler):

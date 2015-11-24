@@ -1,12 +1,12 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import
 
 import sys
-import shlex
 import traceback
 from subprocess import Popen, PIPE
+
+from .base import Operator
 
 
 class CommandError(Exception):
@@ -24,18 +24,23 @@ class CommandError(Exception):
         return self.__unicode__().encode('utf-8')
 
 
-class Command(object):
-    def __init__(self, name):
-        self.name = name
+class ShellOperator(Operator):
+
+    name = 'shell'
+
+    def __init__(self, command, *args, **kwargs):
+        super(ShellOperator, self).__init__(command, *args, **kwargs)
         self.process = None
 
     def cancel(self):
         self.process.terminate()
 
-    def run(self, args='', **kwargs):
+    def run(self, args=(), **kwargs):
+        args, kwargs = self.merge_args(args, kwargs)
+
         kwargs['stdout'] = sys.stdout
         kwargs['stderr'] = PIPE
-        cmd = shlex.split(self.name) + shlex.split(args)
+        cmd = [self.command] + args
 
         try:
             self.process = Popen(cmd, **kwargs)

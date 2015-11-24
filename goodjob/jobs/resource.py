@@ -4,11 +4,12 @@
 from __future__ import absolute_import
 
 from restart import status
+from restart.utils import make_location_header
 from restart.ext.mongo.collection import Collection
 
 from goodjob.api import api
 from goodjob.celery.app import app as celery_app
-from .model import Job
+from .models import Job
 
 
 @api.register
@@ -31,4 +32,5 @@ class Jobs(Collection):
             celery_app.send_task("goodjob.core_job", [job.id])
 
         result = {'id': job.id, 'status': 'pending'}
-        return result, status.HTTP_201_CREATED
+        headers = {'Location': make_location_header(request, job.id)}
+        return result, status.HTTP_201_CREATED, headers

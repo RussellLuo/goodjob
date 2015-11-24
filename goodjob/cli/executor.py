@@ -8,16 +8,16 @@ import signal
 
 import click
 
-from goodjob.jobs.model import Job, JobStatus, JobEvent
-from goodjob.jobs.command import Command
+from goodjob.jobs.models import Job, JobStatus, JobEvent
+from goodjob.operators import manager
 from goodjob.constants import NOW
 
 
 class RealJobExecutor(object):
     def __init__(self, job):
         self.job = job
-        self.provider = Command(job.provider)
-        self.notifier = Command(job.notifier)
+        self.provider = manager.get_operator(job.provider)
+        self.notifier = manager.get_operator(job.notifier)
 
         # register the handler of signal SIGTERM
         signal.signal(signal.SIGTERM, self.sigterm_received)
@@ -26,7 +26,7 @@ class RealJobExecutor(object):
         # cancel the provider process
         self.provider.cancel()
 
-        self.notifier.run(JobEvent.cancelled)
+        self.notifier.run([JobEvent.cancelled])
         self.job.status = JobStatus.cancelled
         self.job.date_stopped = NOW()
         self.job.save()
@@ -35,7 +35,7 @@ class RealJobExecutor(object):
         sys.exit(1)
 
     def execute(self):
-        self.notifier.run(JobEvent.started)
+        self.notifier.run([JobEvent.started])
         self.job.status = JobStatus.in_progress
         self.job.date_started = NOW()
         self.job.save()
@@ -46,10 +46,10 @@ class RealJobExecutor(object):
         # since we do not want to catch `SystemExit`
         except Exception as e:
             sys.stderr.write(unicode(e))
-            self.notifier.run(JobEvent.failed)
+            self.notifier.run([JobEvent.failed])
             self.job.status = JobStatus.failed
         else:
-            self.notifier.run(JobEvent.finished)
+            self.notifier.run([JobEvent.finished])
             self.job.status = JobStatus.finished
         self.job.date_stopped = NOW()
         self.job.save()

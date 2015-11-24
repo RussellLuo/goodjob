@@ -10,7 +10,7 @@ from subprocess import Popen
 
 from goodjob.config import config
 from goodjob.celery.app import app as celery_app
-from .model import Job, JobStatus
+from .models import Job, JobStatus
 
 
 @celery_app.task(name='goodjob.core_job')

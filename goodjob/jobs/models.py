@@ -4,12 +4,15 @@
 from __future__ import absolute_import
 
 from mongoengine import (
-    Document, BooleanField,
-    StringField, DateTimeField
+    Document, EmbeddedDocument,
+    EmbeddedDocumentField,
+    BooleanField, StringField,
+    DateTimeField, ListField, DictField
 )
 
 from goodjob.config import config
 from goodjob.constants import NOW
+from goodjob.operators import manager
 
 
 class JobEvent(object):
@@ -27,12 +30,23 @@ class JobStatus(object):
     cancelled = 'cancelled'
 
 
+class Operation(EmbeddedDocument):
+    type = StringField(required=True, choices=manager.keys())
+    command = StringField(required=True)
+    args = ListField()
+    kwargs = DictField()
+
+
+def default_notifier():
+    return Operation(type='shell', command='goodjob-notifier')
+
+
 class Job(Document):
     meta = {'collection': config.COLLECTION_NAME}
 
     name = StringField(required=True)
-    provider = StringField(required=True)
-    notifier = StringField(default='goodjob-notifier')
+    provider = EmbeddedDocumentField(Operation)
+    notifier = EmbeddedDocumentField(Operation, default=default_notifier)
     status = StringField(default=JobStatus.pending)
     schedule = StringField(default='')
     has_scheduled = BooleanField(default=False)
@@ -40,3 +54,4 @@ class Job(Document):
     date_started = DateTimeField()
     date_stopped = DateTimeField()
     logfile = StringField(default='')
+    description = StringField(default='')
