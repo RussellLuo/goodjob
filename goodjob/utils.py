@@ -1,7 +1,8 @@
 import sys
 from importlib import import_module
+from contextlib import contextmanager
 
-from six import reraise
+import six
 
 
 def import_string(import_path):
@@ -29,4 +30,23 @@ def import_string(import_path):
                 module_path, attr_name
             )
         )
-        reraise(ImportError, ImportError(msg), sys.exc_info()[2])
+        six.reraise(ImportError, ImportError(msg), sys.exc_info()[2])
+
+
+@contextmanager
+def unbuffered():
+    """A context manager that make stdout to be totally unbuffered."""
+    original = sys.stdout
+
+    # For the discussions of some possible solutions, see
+    # http://stackoverflow.com/questions/107705/disable-output-buffering
+    #
+    # The following code works perfectly for jobs in Goodjob, since stdout
+    # and stderr are actually redirected to the same log file for each job.
+    #
+    # TODO: Find a more general and standard solution
+    sys.stdout = sys.stderr
+
+    yield
+
+    sys.stdout = original

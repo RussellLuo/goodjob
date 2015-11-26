@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 
-from goodjob.utils import import_string
+from goodjob.utils import import_string, unbuffered
 from .base import Operator
 
 
@@ -19,4 +19,5 @@ class PythonOperator(Operator):
 
     def run(self, args=(), **kwargs):
         args, kwargs = self.merge_args(args, kwargs)
-        self.callable(*args, **kwargs)
+        with unbuffered():
+            self.callable(*args, **kwargs)

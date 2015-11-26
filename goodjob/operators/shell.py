@@ -16,7 +16,7 @@ class CommandError(Exception):
         self.stderr = stderr
 
     def __unicode__(self):
-        return '`%s` returned %d:\nSTEDERR: %r' % (
+        return '`%s` returned %d:\nSTDERR: %r' % (
             self.cmd, self.retcode, self.stderr
         )
 

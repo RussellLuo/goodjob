@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import sys
 import signal
+import traceback
 
 import click
 
@@ -19,11 +20,11 @@ class RealJobExecutor(object):
         self.provider = manager.get_operator(job.provider)
         self.notifier = manager.get_operator(job.notifier)
 
-        # register the handler of signal SIGTERM
+        # Register the handler of signal SIGTERM
         signal.signal(signal.SIGTERM, self.sigterm_received)
 
     def sigterm_received(self, signum, stack):
-        # cancel the provider process
+        # Cancel the provider process
         self.provider.cancel()
 
         self.notifier.run([JobEvent.cancelled])
@@ -31,7 +32,7 @@ class RealJobExecutor(object):
         self.job.date_stopped = NOW()
         self.job.save()
 
-        # exit explicitly (raise `SystemExit`)
+        # Exit explicitly (raise `SystemExit`)
         sys.exit(1)
 
     def execute(self):
@@ -42,10 +43,11 @@ class RealJobExecutor(object):
 
         try:
             self.provider.run()
-        # do not use `except:` here,
+        # Do not use `except:` here,
         # since we do not want to catch `SystemExit`
-        except Exception as e:
-            sys.stderr.write(unicode(e))
+        except Exception:
+            exc_info = traceback.format_exc()
+            sys.stderr.write(exc_info)
             self.notifier.run([JobEvent.failed])
             self.job.status = JobStatus.failed
         else:
