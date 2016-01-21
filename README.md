@@ -56,15 +56,26 @@ Create an one-off job:
 
     $ curl -i -X POST -H "Content-Type: application/json" -d '{
         "name": "greet",
-        "provider": "echo hello"
+        "provider": {"type": "shell", "command": "echo", "args": ["hello"]}
     }' http://127.0.0.1:5000/jobs
 
 or a periodic job (in crontab-style):
 
     $ curl -i -X POST -H "Content-Type: application/json" -d '{
         "name": "greet",
-        "provider": "echo hello",
+        "provider": {"type": "shell", "command": "echo", "args": ["hello"]}
         "schedule": "* * * * *"
+    }' http://127.0.0.1:5000/jobs
+
+Besides Shell jobs, Goodjob also supports Python jobs. A Python job is a Python callable specified by its Python path. For example:
+
+    $ curl -i -X POST -H "Content-Type: application/json" -d '{
+        "name": "email",
+        "provider": {
+            "type": "python",
+            "command": "python_path.to.utility.send_email",
+            "kwargs": {"to": "user@example.com", "subject": "Welcome", "body": "Hi there, buddy!"}
+        }
     }' http://127.0.0.1:5000/jobs
 
 Inspect the job:
