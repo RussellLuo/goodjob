@@ -6,6 +6,7 @@ from __future__ import absolute_import
 from restart import status
 from restart.utils import make_location_header
 from restart.ext.mongo.collection import Collection
+from restart.ext.crossdomain.cors import CORSMiddleware
 
 from goodjob.api import api
 from goodjob.celery.app import app as celery_app
@@ -18,6 +19,8 @@ class Jobs(Collection):
 
     database = Job._get_db()
     collection_name = Job._get_collection_name()
+
+    middleware_classes = (CORSMiddleware,) + Collection.middleware_classes
 
     def create(self, request):
         try:

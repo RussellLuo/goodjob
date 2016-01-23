@@ -30,6 +30,7 @@ setup(
         'celery==3.1.17',
         'redis==2.10.3',
         'restart-mongo',
+        'restart-crossdomain',
         'mongoengine==0.9.0',
         'click==4.0',
     ],
