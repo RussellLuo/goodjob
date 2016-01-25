@@ -31,7 +31,7 @@ setup(
         'redis==2.10.3',
         'restart-mongo',
         'restart-crossdomain',
-        'mongoengine==0.9.0',
+        'mongoengine',
         'click==4.0',
     ],
     entry_points={
