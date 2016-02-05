@@ -53,6 +53,7 @@ class DatabaseScheduler(PersistentScheduler):
                 schedule=schedule,
                 task='goodjob.core_job',
                 args=[job.id],
+                options={'queue': job.queue},
             )
 
             job.has_scheduled = True

@@ -33,7 +33,7 @@ class Jobs(Collection):
 
         # Queue non-periodic jobs at once
         if not job.schedule:
-            celery_app.send_task("goodjob.core_job", [job.id])
+            celery_app.send_task('goodjob.core_job', [job.id], queue=job.queue)
 
         result = {'id': job.id, 'status': 'pending'}
         headers = {'Location': make_location_header(request, job.id)}

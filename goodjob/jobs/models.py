@@ -49,6 +49,7 @@ class Job(Document):
     notifier = EmbeddedDocumentField(Operation, default=default_notifier)
     status = StringField(default=JobStatus.pending)
     schedule = StringField(default='')
+    queue = StringField(default='goodjob')
     has_scheduled = BooleanField(default=False)
     date_created = DateTimeField(default=NOW)
     date_started = DateTimeField()
