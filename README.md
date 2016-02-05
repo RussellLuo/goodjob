@@ -23,25 +23,25 @@ Quickstart
 
 ### 1. Start databases
 
-Start the MongoDB server (used by `goodjob-api`):
+Start the MongoDB server (used by the Goodjob API):
 
     $ mongod
 
-Start the Redis server (used by `celery`):
+Start the Redis server (used by Celery):
 
     $ redis-server
 
 ### 2. Start services
 
-Start the API:
+Start the Goodjob API:
 
     $ restart goodjob.api:api
 
-Start the celery worker:
+Start the Celery worker (only handles the `goodjob` queue):
 
-    $ celery worker --app=goodjob.celery.app --loglevel=info
+    $ celery worker --app=goodjob.celery.app -Q goodjob --loglevel=info
 
-Start the celery scheduler (for periodic jobs):
+Start the Celery scheduler (for periodic jobs):
 
     $ celery beat --app=goodjob.celery.app --loglevel=info
 
@@ -63,7 +63,7 @@ or a periodic job (in crontab-style):
 
     $ curl -i -X POST -H "Content-Type: application/json" -d '{
         "name": "greet",
-        "provider": {"type": "shell", "command": "echo", "args": ["hello"]}
+        "provider": {"type": "shell", "command": "echo", "args": ["hello"]},
         "schedule": "* * * * *"
     }' http://127.0.0.1:5000/jobs
 
