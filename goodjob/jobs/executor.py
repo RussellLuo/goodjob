@@ -9,8 +9,11 @@ import errno
 from subprocess import Popen
 
 from goodjob.config import config
+from goodjob.constants import EXEC_PATH
 from goodjob.celery.app import app as celery_app
 from .models import Job, JobStatus
+
+GOODJOB_EXECUTOR = os.path.join(EXEC_PATH, 'goodjob-executor')
 
 
 @celery_app.task(name='goodjob.core_job')
@@ -50,7 +53,7 @@ class JobExecutor(object):
 
         with open(self.job.logfile, 'a+') as log:
             self.process = Popen(
-                args=['goodjob-executor', str(self.job.id)],
+                args=[GOODJOB_EXECUTOR, str(self.job.id)],
                 stdout=log,
                 stderr=log,
             )
