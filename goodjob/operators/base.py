@@ -21,6 +21,6 @@ class Operator(object):
         """Cancel the running command."""
         raise NotImplemented()
 
-    def run(self, args=(), **kwargs):
+    def run(self, *args, **kwargs):
         """Run the command with arguments from `args` and `kwargs`."""
         raise NotImplemented()

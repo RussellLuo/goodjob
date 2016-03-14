@@ -17,7 +17,7 @@ class PythonOperator(Operator):
     def cancel(self):
         pass
 
-    def run(self, args=(), **kwargs):
+    def run(self, *args, **kwargs):
         args, kwargs = self.merge_args(args, kwargs)
         with unbuffered():
             self.callable(*args, **kwargs)

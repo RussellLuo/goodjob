@@ -17,14 +17,14 @@ class TestShellOperator(TestCase):
 
     def test_run_command_ok(self, capfd):
         operator = ShellOperator('/bin/bash')
-        operator.run([SCRIPT_NAME])
+        operator.run(SCRIPT_NAME)
         out, err = capfd.readouterr()
         assert out == 'start...\nwait...\nwait...\nwait...\nend...\n'
 
     def test_run_command_err(self):
         operator = ShellOperator('/bin/non-bash')
         with pytest.raises(CommandError) as exc:
-            operator.run([SCRIPT_NAME])
+            operator.run(SCRIPT_NAME)
         expected_exc_part = (
             "CommandError: `['/bin/non-bash', '%s']`" % SCRIPT_NAME
         )

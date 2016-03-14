@@ -27,7 +27,7 @@ class RealJobExecutor(object):
         # Cancel the provider process
         self.provider.cancel()
 
-        self.notifier.run([JobEvent.cancelled])
+        self.notifier.run(self.job.name, JobEvent.cancelled)
         self.job.status = JobStatus.cancelled
         self.job.date_stopped = NOW()
         self.job.save()
@@ -36,7 +36,7 @@ class RealJobExecutor(object):
         sys.exit(1)
 
     def execute(self):
-        self.notifier.run([JobEvent.started])
+        self.notifier.run(self.job.name, JobEvent.started)
         self.job.status = JobStatus.in_progress
         self.job.date_started = NOW()
         self.job.save()
@@ -48,10 +48,10 @@ class RealJobExecutor(object):
         except Exception:
             exc_info = traceback.format_exc()
             sys.stderr.write(exc_info)
-            self.notifier.run([JobEvent.failed])
+            self.notifier.run(self.job.name, JobEvent.failed)
             self.job.status = JobStatus.failed
         else:
-            self.notifier.run([JobEvent.finished])
+            self.notifier.run(self.job.name, JobEvent.finished)
             self.job.status = JobStatus.finished
         self.job.date_stopped = NOW()
         self.job.save()

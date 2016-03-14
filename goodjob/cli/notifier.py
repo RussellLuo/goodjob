@@ -9,9 +9,10 @@ import click
 
 
 @click.command()
+@click.argument('job_name')
 @click.argument('event')
-def main(event):
-    args = ['echo', '>>> job %s' % event]
+def main(job_name, event):
+    args = ['echo', '>>> job[%s] %s' % (job_name, event)]
     return subprocess.call(args)
 
 

@@ -21,13 +21,13 @@ class TestPythonOperator(TestCase):
 
     def test_run_command_ok(self, capfd):
         operator = PythonOperator('tests.test_pythonoperator.echo_ok')
-        operator.run(['arg1', 'arg2'])
+        operator.run('arg1', 'arg2')
         out, err = capfd.readouterr()
         assert err == "('arg1', 'arg2')\n{}\n"
 
     def test_run_command_err(self):
         operator = PythonOperator('tests.test_pythonoperator.echo_err')
         with pytest.raises(Exception) as exc:
-            operator.run(['arg1', 'arg2'])
+            operator.run('arg1', 'arg2')
         expected_exc_part = 'Some error occurs'
         assert expected_exc_part in str(exc)

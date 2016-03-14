@@ -27,7 +27,7 @@ class TestJobExecutor(TestCase):
 
         with open(job.logfile, 'r') as log:
             text = log.read()
-            assert('>>> job finished' in text)
+            assert('>>> job[%s] finished' % job.name in text)
 
     def test_cancel_job(self):
         job = self.create_job(command='sleep 30')
@@ -50,4 +50,4 @@ class TestJobExecutor(TestCase):
 
         with open(job.logfile, 'r') as log:
             text = log.read()
-            assert('>>> job cancelled' in text)
+            assert('>>> job[%s] cancelled' % job.name in text)

@@ -35,7 +35,7 @@ class ShellOperator(Operator):
     def cancel(self):
         self.process.terminate()
 
-    def run(self, args=(), **kwargs):
+    def run(self, *args, **kwargs):
         args, kwargs = self.merge_args(args, kwargs)
 
         kwargs['stdout'] = sys.stdout
