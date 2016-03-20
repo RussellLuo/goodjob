@@ -38,7 +38,7 @@ class Operation(EmbeddedDocument):
 
 
 def default_notifier():
-    return Operation(type='shell', command='goodjob-notifier')
+    return Operation(type='python', command='goodjob.jobs.notifier.notify')
 
 
 class Job(Document):

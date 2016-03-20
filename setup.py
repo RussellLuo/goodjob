@@ -37,7 +37,6 @@ setup(
     entry_points={
         'console_scripts': [
             'goodjob-executor = goodjob.cli.executor:main',
-            'goodjob-notifier = goodjob.cli.notifier:main',
         ],
     },
 )
