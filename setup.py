@@ -27,7 +27,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     url='https://github.com/RussellLuo/goodjob',
     install_requires=[
-        'celery==3.1.17',
+        'celery==5.2.2',
         'redis==2.10.3',
         'restart-mongo',
         'restart-crossdomain',
